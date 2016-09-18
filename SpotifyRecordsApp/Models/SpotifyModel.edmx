@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SpotifyRecordsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Albums">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Yearreleased" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ArtistId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Artists">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Songs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Genre" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AlbumId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PasswordHash" Type="binary" MaxLength="64" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Role" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="Album_to_artist">
+          <End Role="Artists" Type="Self.Artists" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Albums" Type="Self.Albums" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Artists">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Albums">
+              <PropertyRef Name="ArtistId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Song_to_album">
+          <End Role="Albums" Type="Self.Albums" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Songs" Type="Self.Songs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Albums">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Songs">
+              <PropertyRef Name="AlbumId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SpotifyRecordsModelStoreContainer">
+          <EntitySet Name="Albums" EntityType="Self.Albums" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Artists" EntityType="Self.Artists" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Songs" EntityType="Self.Songs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="Album_to_artist" Association="Self.Album_to_artist">
+            <End Role="Artists" EntitySet="Artists" />
+            <End Role="Albums" EntitySet="Albums" />
+          </AssociationSet>
+          <AssociationSet Name="Song_to_album" Association="Self.Song_to_album">
+            <End Role="Albums" EntitySet="Albums" />
+            <End Role="Songs" EntitySet="Songs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SpotifyRecordsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Albums">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Yearreleased" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ArtistId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Artists" Relationship="Self.Album_to_artist" FromRole="Albums" ToRole="Artists" />
+          <NavigationProperty Name="Songs" Relationship="Self.Song_to_album" FromRole="Albums" ToRole="Songs" />
+        </EntityType>
+        <EntityType Name="Artists">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Albums" Relationship="Self.Album_to_artist" FromRole="Artists" ToRole="Albums" />
+        </EntityType>
+        <EntityType Name="Songs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Genre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AlbumId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Albums" Relationship="Self.Song_to_album" FromRole="Songs" ToRole="Albums" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PasswordHash" Type="Binary" MaxLength="64" FixedLength="true" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <Association Name="Album_to_artist">
+          <End Role="Artists" Type="Self.Artists" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Albums" Type="Self.Albums" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Artists">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Albums">
+              <PropertyRef Name="ArtistId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Song_to_album">
+          <End Role="Albums" Type="Self.Albums" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Songs" Type="Self.Songs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Albums">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Songs">
+              <PropertyRef Name="AlbumId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SpotifyRecordsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Albums" EntityType="Self.Albums" />
+          <EntitySet Name="Artists" EntityType="Self.Artists" />
+          <EntitySet Name="Songs" EntityType="Self.Songs" />
+          <EntitySet Name="Users" EntityType="Self.Users" />
+          <AssociationSet Name="Album_to_artist" Association="Self.Album_to_artist">
+            <End Role="Artists" EntitySet="Artists" />
+            <End Role="Albums" EntitySet="Albums" />
+          </AssociationSet>
+          <AssociationSet Name="Song_to_album" Association="Self.Song_to_album">
+            <End Role="Albums" EntitySet="Albums" />
+            <End Role="Songs" EntitySet="Songs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SpotifyRecordsModelStoreContainer" CdmEntityContainer="SpotifyRecordsEntities">
+          <EntitySetMapping Name="Albums">
+            <EntityTypeMapping TypeName="SpotifyRecordsModel.Albums">
+              <MappingFragment StoreEntitySet="Albums">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Yearreleased" ColumnName="Yearreleased" />
+                <ScalarProperty Name="ArtistId" ColumnName="ArtistId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Artists">
+            <EntityTypeMapping TypeName="SpotifyRecordsModel.Artists">
+              <MappingFragment StoreEntitySet="Artists">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Songs">
+            <EntityTypeMapping TypeName="SpotifyRecordsModel.Songs">
+              <MappingFragment StoreEntitySet="Songs">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Genre" ColumnName="Genre" />
+                <ScalarProperty Name="AlbumId" ColumnName="AlbumId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="SpotifyRecordsModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
