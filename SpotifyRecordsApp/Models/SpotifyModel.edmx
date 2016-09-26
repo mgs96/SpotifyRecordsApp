@@ -21,6 +21,15 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="Rankings">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="SongId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="SongId" Type="int" Nullable="false" />
+          <Property Name="Rating" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Songs">
           <Key>
             <PropertyRef Name="Id" />
@@ -55,6 +64,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Rakings_ToUsers">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Rankings" Type="Self.Rankings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rankings">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rankings_ToSongs">
+          <End Role="Songs" Type="Self.Songs" Multiplicity="1" />
+          <End Role="Rankings" Type="Self.Rankings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Songs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rankings">
+              <PropertyRef Name="SongId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="Song_to_album">
           <End Role="Albums" Type="Self.Albums" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -72,11 +105,20 @@
         <EntityContainer Name="SpotifyRecordsModelStoreContainer">
           <EntitySet Name="Albums" EntityType="Self.Albums" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Artists" EntityType="Self.Artists" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rankings" EntityType="Self.Rankings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Songs" EntityType="Self.Songs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="Album_to_artist" Association="Self.Album_to_artist">
             <End Role="Artists" EntitySet="Artists" />
             <End Role="Albums" EntitySet="Albums" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rakings_ToUsers" Association="Self.FK_Rakings_ToUsers">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Rankings" EntitySet="Rankings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rankings_ToSongs" Association="Self.FK_Rankings_ToSongs">
+            <End Role="Songs" EntitySet="Songs" />
+            <End Role="Rankings" EntitySet="Rankings" />
           </AssociationSet>
           <AssociationSet Name="Song_to_album" Association="Self.Song_to_album">
             <End Role="Albums" EntitySet="Albums" />
@@ -115,6 +157,7 @@
           <Property Name="Genre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="AlbumId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Albums" Relationship="Self.Song_to_album" FromRole="Songs" ToRole="Albums" />
+          <NavigationProperty Name="Rankings" Relationship="SpotifyRecordsModel.FK_Rankings_ToSongs" FromRole="Songs" ToRole="Rankings" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -126,6 +169,7 @@
           <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Rankings" Relationship="SpotifyRecordsModel.FK_Rakings_ToUsers" FromRole="Users" ToRole="Rankings" />
         </EntityType>
         <Association Name="Album_to_artist">
           <End Role="Artists" Type="Self.Artists" Multiplicity="1">
@@ -168,7 +212,51 @@
             <End Role="Albums" EntitySet="Albums" />
             <End Role="Songs" EntitySet="Songs" />
           </AssociationSet>
+          <EntitySet Name="Rankings" EntityType="SpotifyRecordsModel.Rankings" />
+          <AssociationSet Name="FK_Rakings_ToUsers" Association="SpotifyRecordsModel.FK_Rakings_ToUsers">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Rankings" EntitySet="Rankings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rankings_ToSongs" Association="SpotifyRecordsModel.FK_Rankings_ToSongs">
+            <End Role="Songs" EntitySet="Songs" />
+            <End Role="Rankings" EntitySet="Rankings" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Rankings">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="SongId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="SongId" Type="Int32" Nullable="false" />
+          <Property Name="Rating" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="SpotifyRecordsModel.FK_Rakings_ToUsers" FromRole="Rankings" ToRole="Users" />
+          <NavigationProperty Name="Songs" Relationship="SpotifyRecordsModel.FK_Rankings_ToSongs" FromRole="Rankings" ToRole="Songs" />
+        </EntityType>
+        <Association Name="FK_Rakings_ToUsers">
+          <End Type="SpotifyRecordsModel.Users" Role="Users" Multiplicity="1" />
+          <End Type="SpotifyRecordsModel.Rankings" Role="Rankings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rankings">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rankings_ToSongs">
+          <End Type="SpotifyRecordsModel.Songs" Role="Songs" Multiplicity="1" />
+          <End Type="SpotifyRecordsModel.Rankings" Role="Rankings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Songs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Rankings">
+              <PropertyRef Name="SongId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -212,6 +300,15 @@
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rankings">
+            <EntityTypeMapping TypeName="SpotifyRecordsModel.Rankings">
+              <MappingFragment StoreEntitySet="Rankings">
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="SongId" ColumnName="SongId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

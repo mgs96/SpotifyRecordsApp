@@ -11,6 +11,9 @@
         <EntityTypeShape EntityType="SpotifyRecordsModel.Users" Width="1.5" PointX="7.125" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="SpotifyRecordsModel.Album_to_artist" ManuallyRouted="false" />
         <AssociationConnector Association="SpotifyRecordsModel.Song_to_album" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="SpotifyRecordsModel.Rankings" Width="1.5" PointX="9.375" PointY="1.25" />
+        <AssociationConnector Association="SpotifyRecordsModel.FK_Rakings_ToUsers" />
+        <AssociationConnector Association="SpotifyRecordsModel.FK_Rankings_ToSongs" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

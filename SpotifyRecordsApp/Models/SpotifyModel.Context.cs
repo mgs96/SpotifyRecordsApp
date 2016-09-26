@@ -29,5 +29,6 @@ namespace SpotifyRecordsApp.Models
         public virtual DbSet<Artists> Artists { get; set; }
         public virtual DbSet<Songs> Songs { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Rankings> Rankings { get; set; }
     }
 }

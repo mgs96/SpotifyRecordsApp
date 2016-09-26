@@ -14,11 +14,20 @@ namespace SpotifyRecordsApp.Models
     
     public partial class Users
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Users()
+        {
+            this.Rankings = new HashSet<Rankings>();
+        }
+    
         public int Id { get; set; }
         public string Username { get; set; }
         public byte[] PasswordHash { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Role { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Rankings> Rankings { get; set; }
     }
 }
